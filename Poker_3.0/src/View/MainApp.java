@@ -121,19 +121,24 @@ public class MainApp extends JFrame implements ActionListener{
 		}else{
 			if(src == this.NewTableBtn){
 				Server srv = null;
+				boolean own = true;
 				try{
-					int port = Integer.parseInt(this.PortTf.getText());
-					double startpoints = Double.parseDouble(this.PointsTf.getText());
-					if(startpoints<300){
-						this.sentMsg("Minimum 300$",Color.RED);
-						return;
-					}
-				if(this.HostTf.getText().equals("localhost")){
-					srv = new Server(port);
-					new Thread(srv).start();
-					Thread.sleep(500);
-			    }
-					new Thread(new GameFrame(this.NickTf.getText(),startpoints,this.HostTf.getText(),port,true,srv,this)).start();
+						int port = Integer.parseInt(this.PortTf.getText());
+						double startpoints = Double.parseDouble(this.PointsTf.getText());
+						if(startpoints<300){
+							this.sentMsg("Minimum 300$",Color.RED);
+							return;
+						}
+						if(this.HostTf.getText().equals("localhost")){
+							srv = new Server(port);
+							new Thread(srv).start();
+							Thread.sleep(500);
+							if(!srv.isExcFlag()){
+								new Thread(new GameFrame(this.NickTf.getText(),startpoints,this.HostTf.getText(),port,own,srv,this)).start();
+							}else{
+								this.sentMsg(srv.getExc().getMessage(),Color.red);
+							}
+						}
 				 }catch(Exception pe){
 					 pe.printStackTrace();
 					 this.sentMsg("Błąd Portu lub punktów",Color.red); 

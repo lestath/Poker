@@ -30,6 +30,8 @@ public class Server extends Table implements Runnable{
 	private int Port;
 	private CyclesCounter Counter; // wątek licznika cykli
 	private ObserverService Observer; // wątek obsługi dodawania obserwatorów
+	private Exception Exc; // komunikat błędu
+	private boolean ExcFlag; // flaga wystapienia błędów
 
 
 
@@ -50,11 +52,13 @@ public class Server extends Table implements Runnable{
 		this.setClientsQueue(new LinkedList<ServerRequest>());
 		this.Observer = null;
 		this.AllowToSentAllCards = false;
+		this.ExcFlag = false;
+		this.Exc = null;
 	}
 	
 	
 	@Override
-	public void run() {
+	public void run(){
 		try {
 			this.Sck = new ServerSocket(this.Port,4);
 			// do usunięcia
@@ -73,11 +77,12 @@ public class Server extends Table implements Runnable{
 			this.Observer = new ObserverService(this); // uruchomienie wątku nasłuchu obserwatorów
 			this.Observer.start();
 			this.startGame(); // start gry
-		} catch (IOException | InterruptedException e) {
-			// ewentualna obsługa błędu
+		} catch (Exception e) {
+			this.ExcFlag = true;
+			this.Exc = e;
 		}
 	}
-
+	
 	/** 
 	 * Metoda ustawiająca i rozdająca karty graczom
 	 */
@@ -570,6 +575,26 @@ public boolean isAllowToSentAllCards() {
 
 public void setAllowToSentAllCards(boolean allowToSentAllCards) {
 	AllowToSentAllCards = allowToSentAllCards;
+}
+
+
+public Exception getExc() {
+	return Exc;
+}
+
+
+public void setExc(Exception exc) {
+	Exc = exc;
+}
+
+
+public boolean isExcFlag() {
+	return ExcFlag;
+}
+
+
+public void setExcFlag(boolean excFlag) {
+	ExcFlag = excFlag;
 }
 
 
