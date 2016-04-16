@@ -11,7 +11,9 @@ import Game.Player;
 import Game.Table;
 import View.Exit;
 import View.GameFrame;
-
+/**
+ * Klasa wysyła żądania klienta, oraz obsługuje odpowiedzi serwera
+ */
 public class Client extends Table implements Runnable{
 
 	/**
@@ -30,7 +32,20 @@ public class Client extends Table implements Runnable{
 	private Socket Sck;
 	@SuppressWarnings("unused")
 	private Server Srv; // wskaźnik serwera jeżeli gracz jest właścicielem stołu, w innym wypadku null
-
+    
+	/**
+	 * Konstruktor 
+	 * @param nick
+	 * 			 nazwa klienta
+	 * @param startpoints
+	 * 			 ilość punktów z jaką gracza rozpocznie rozgrywkę
+	 * @param host
+	 * 			nazwa, lub adres IP hosta do którego podłączy się klient
+	 * @param port
+	 * 			numer portu na którym nasłuchuje serwer (domyślnie 4444)
+	 * @param frm
+	 * 			wskaźnik interfejsu użytkownika
+	 */
 	public Client(String nick,double startpoints,String host, int port, GameFrame frm){
 		super();
 		super.setPlayer(new Player(nick),0);
@@ -44,24 +59,58 @@ public class Client extends Table implements Runnable{
 		this.Port = port;
 		this.Srv = null;
 	}
-	
+	/**
+	 * Konstruktor 
+	 * @param nick
+	 * 			 nazwa klienta
+	 * @param startpoints
+	 * 			 ilość punktów z jaką gracza rozpocznie rozgrywkę
+	 * @param host
+	 * 			nazwa, lub adres IP hosta do którego podłączy się klient
+	 * @param port
+	 * 			numer portu na którym nasłuchuje serwer (domyślnie 4444)
+	 * @param frm
+	 * 			wskaźnik interfejsu użytkownika
+	 * @param owner
+	 * 			flaga wskazująca czy gracz jest jednocześnie właścicielem serwera (tj. czy założył dany stół) 
+	 */
 	public Client(String nick,double startpoints,String host, int port, GameFrame frm,boolean owner){
 		this(nick,startpoints,host,port,frm);
 		this.getPlayer(0).setOwner(owner);
 	}
 	
+	
+	/**
+	 * Sprawdza czy klient jest w stanie czynnym
+	 * @return
+	 * 		zwraca stan klienta, jeżeli true to klient jest w stanie aktywności
+	 */
 	public boolean isRunning() {
 		return Running;
 	}
+	/**
+	 * Ustawia stan aktywności klienta
+	 * @param running
+	 * 				parametr aktywności
+	 */
 	public void setRunning(boolean running) {
 		Running = running;
 	}
 	
+	/**
+	 * Ustawia wskaźnik serwera
+	 * @param s
+	 * 			Wskaźnik na Serwer którego właścicielem jest dany klient
+	 */
 	public void setSrv(Server s){
 		this.Srv = s;
 	}
 	
 	
+	/**
+	 * Metoda uruchamiana automatycznie przy starcie wątku. Prowadzi zapętlony nasłuch na pakiety otrzymywane od serwera.
+	 * W zależności od otrzymanej komendy wykonywane są odpowiednie metody obsługi 
+	 */
 	@Override
 	public void run() {
 		// utworzenie i wysłanie pakietu powitalnego wraz z przedstawieniem gracza
@@ -82,8 +131,8 @@ public class Client extends Table implements Runnable{
 						this.byeService();
 					}else if(InPack.getMessage().equals("SUCCESS")){
 						this.Frame.getMainFrame().sentMsg("Poprawnie Połączono",Color.GREEN);
-					}else if(InPack.getMessage().equals("FIRSTDISTRIB")){
-						 this.firstdistribService();
+				//	}else if(InPack.getMessage().equals("FIRSTDISTRIB")){
+						// this.firstdistribService();
 					}else if(InPack.getMessage().equals("REFRESH")){
 						this.refreshService();
 					}else if(InPack.getMessage().equals("PLAYEROUT")){
@@ -112,7 +161,9 @@ public class Client extends Table implements Runnable{
 	
 	
 
-	// metoda obsługi czatu, dodaje otrzymaną wiadomość do pola czatu
+	/**
+	 *  Metoda obsługi czatu, dodaje otrzymaną wiadomość do pola czatu
+	 */
 	private void chatService() {
 		String msg = this.InPack.getLastChatMessage();
 		this.Frame.getChatTa().append(msg);
@@ -121,11 +172,17 @@ public class Client extends Table implements Runnable{
 								);
 	}
 
+	/**
+	 * Zmienia stan klienta z obserwatora na gracza czynnego
+	 */
 	private void youReInGameService() {
 		this.Frame.getGp().setObserverMode(false);
 		
 	}
 
+	/**
+	 * Metoda obsługi odświeżenia informacji dla obserwatora stołu
+	 */
 	private void ObserverRefreshService() {
 		 this.setPlayers(InPack.getPlayers());
 		 this.setBank(InPack.getBank());
@@ -138,11 +195,20 @@ public class Client extends Table implements Runnable{
 		 this.Frame.getGp().repaint();
 	}
 
+	/**
+	 * 
+	 * @return
+	 * 		Zwraca obiektowy strumień wyjściowy klienta
+	 */
 	public ObjectOutputStream getOut() {
 		return out;
 	}
 	
-	// funkcja wysyła pakiet do serwera
+	/**
+	 *  Metoda wysyła pakiet do serwera
+	 * @param pack
+	 * 			Obiekt pakietu, który zostanie przesłany do serwera
+	 */
 	public void sentPack(InfoPack pack){
 		InfoPack p = pack;
 		try {
@@ -156,7 +222,11 @@ public class Client extends Table implements Runnable{
 	}
 	
 	
-	// metoda ustawia parametry elementów ramki gracza w zależności od ostatniej akcji na stole 
+	/** 
+	 * Metoda ustawia parametry elementów ramki gracza w zależności od ostatniej akcji na stole 
+	 * @param act
+	 * 			numer ostatnio wykonanej akcji klienta
+	 */
 	public void setBtnsAfterAction(int act){
 		DecimalFormat dec = new DecimalFormat("#.##");
 		switch(act){
@@ -182,13 +252,17 @@ public class Client extends Table implements Runnable{
 		}
 	}
 	
-	// metoda obsługi polecenia refresh
+	/** 
+	 * Metoda obsługi polecenia refresh
+	 */
 	private void refreshService(){
+		if(InPack.getPlayer(0).getAction()==6){this.Frame.getGp().setObserverMode(false);}
 		String playerinfo = "";
 	    if(!this.Frame.getGp().isObserverMode()){
 	    	playerinfo = "<html>Gracz : "+this.getPlayer(0).getNickName()+"<br></html>";
 			this.Frame.getPlayerInfoLab().setText(playerinfo);
 	    }
+	    
 		 this.setPlayers(InPack.getPlayers());
 		 this.setBank(InPack.getBank());
 		 this.setCycle(InPack.getCycle());
@@ -203,7 +277,7 @@ public class Client extends Table implements Runnable{
 		 this.Frame.getGp().repaint();
 	}
 	
-	
+/*	
 	// metoda obsługująca pierwsze rozdanie
 	private void firstdistribService(){
 		this.setPlayers(InPack.getPlayers());
@@ -217,10 +291,15 @@ public class Client extends Table implements Runnable{
 		 this.getPlayer(0).setHandPower(this.getPlayer(0).getH().getHandPower());
 		 this.Frame.getGp().setPlayFlag(true);
 		 this.Frame.getGp().repaint();
+		 if(this.Frame.getStartBtn()!=null){	
+				this.Frame.getStartBtn().setEnabled(false);
+		}
 	}
 	
-	
-	// metoda obsługi otrzymania nowych kart po wymianie
+*/
+	/** 
+	 * Metoda obsługi otrzymania nowych kart po wymianie
+	 */
 	private void newcardsService(){
 		InfoPack pack = this.InPack;
 		this.getPlayer(0).setH(pack.getPlayer(0).getH());
@@ -236,15 +315,15 @@ public class Client extends Table implements Runnable{
 	}
 	
 	
-	// metoda obsługi wyjścia klienta
+	/** 
+	 * Metoda obsługi wyjścia klienta
+	 * @throws IOException
+	 * 					Wyjątek wejścia/wyjścia
+	 */
 	private void byeService() throws IOException{
 		this.Sck.close();
 		this.Running = false;
 		this.Frame.getMainFrame().sentMsg("Poprawnie Odłączono",Color.GREEN);
 		this.Frame.dispose();
-	}
-	
-	protected void finalize(){
-		System.out.println("Koniec Klienta");
 	}
 }

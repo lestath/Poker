@@ -36,6 +36,7 @@ public class GraphPanel extends JPanel implements MouseListener{
 	private GameFrame Frame; //okienko gracza
 	
 	public GraphPanel(int w,int h,GameFrame frm){
+		this.ObserverMode = false;
 		this.setPreferredSize(new Dimension(w,h));
 		this.setOpaque(false);
 		this.PlayFlag = false;
@@ -120,14 +121,13 @@ public class GraphPanel extends JPanel implements MouseListener{
 	 */
 	
 	private void showClientCards(Graphics2D g2d){
-	//	 DecimalFormat df = new DecimalFormat("#.##");
-	//	 String action;// łańcuch znaków akcji;
 	   boolean endround = this.isEnd();
 	   int w =0;// szerokość na stole
 	   int h =0;//wysokosć na stole
 	 
-	   for(int j=0;j<4;j++){ //iteruje po graczach 
+	   for(int j=0;j<4;j++){ //iteruje po graczach , jeżeli to nie koniec rozdania to zaończy się po jednej iteracji
 		 if(this.Cli.getPlayer(j)!=null){
+			 // wypozycjonowanie kart w oknie  dla odpowiednich graczy 
 			 switch(j){
 			     case 0:
 			    	 w = 180;
@@ -164,9 +164,16 @@ public class GraphPanel extends JPanel implements MouseListener{
 						e.printStackTrace();
 					}
 						g2d.drawImage(this.CARDS_IMG[i],this.DimCardsTab[i].getSize().width,this.DimCardsTab[i].getSize().height,this);
-			 	}		
+			 	}	
+				if(this.Frame.getStartBtn()!=null){	
+						this.Frame.getStartBtn().setEnabled(false);
+				}
 			 }
-		 if(!endround){return;}
+		 if(!endround){
+			 return;
+		  }else{
+			  this.Frame.disableGameBtns();
+		  }
 	   }
 	}
 	// metoda dekoduje cyfrowy kod akcji klienta na słowny
@@ -190,6 +197,9 @@ public class GraphPanel extends JPanel implements MouseListener{
 			break;
 			case 5 :
 				status = new String("Wchodzę");
+			break;
+			default:
+				status = new String("Czekam");
 			break;
 			
 		}
@@ -264,7 +274,7 @@ public class GraphPanel extends JPanel implements MouseListener{
 						g2d.drawImage(this.TokenImg,tokenw,tokenh,this);
 					}
 					
-				 // okienko zwycięzcy
+				 // informacje o zwycięzcach
 				 if(this.Cli.getPlayer(0).getWinner()==1){
 					 this.Frame.setMsg("<html>ZAGARNIASZ PULĘ</html>",Color.GREEN);
 				 }else if(this.Cli.getPlayer(j).getWinner()==1){	 

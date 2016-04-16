@@ -306,7 +306,7 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	public void enableGameBtns(){
 		this.ImInBtn.setEnabled(true);
 		this.RaiseBtn.setEnabled(true);
-		if(this.Cli.getPlayer(0).getChanges()<1){
+		if((this.Cli.getPlayer(0).getChanges()<1) && (this.Cli.getCycle()<1)){
 			this.ChangeBtn.setEnabled(true);
 		}else{
 			this.ChangeBtn.setEnabled(false);
@@ -518,6 +518,9 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		 }
 	}
 
+	public JButton getStartBtn(){
+		return this.StartGameBtn;
+	}
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
@@ -536,4 +539,5 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		}
 	}
 
+	
 }

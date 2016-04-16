@@ -8,8 +8,7 @@ import java.net.Socket;
 
 /**
  * 
- * @author lestath
- * Wątek obsługujący przychodzenie obserwatorów 
+ * Wątek obsługujący nadchodzących obserwatorów 
  */
 public class ObserverService extends Thread{
 	

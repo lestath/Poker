@@ -87,6 +87,25 @@ public class ServerRequest extends Thread{
 
 
 	private void observerHelloService(InfoPack p) throws IOException {
+		//TODO testowe
+		int active = 0;
+		for(int i=0;i<4;i++){
+			if(this.Serv.getPlayer(i)!=null){
+			 active = active +1;
+			}
+		}
+		if(active < 2){
+			for(int i=0;i<4;i++){
+				if(this.Serv.getPlayer(i)==null){
+				  this.ClientID = i;
+				  this.Serv.setPlayer(p.getPlayer(0),i);
+				  this.Serv.getPlayer(i).setAction(6); // ustawiamy nr akcji na 6 aby klient zorientował się, że już nie jest obserwatorem
+				  this.Serv.setClientsThr(this, i);
+				  this.Serv.startGame();
+				  return;
+				}
+			}
+		}
 		 this.setWaitingPlayer(p.getPlayer(0));
          this.OutPack = new InfoPack("OBSERVER_REFRESH");
          this.OutPack.setPlayers(this.Serv.getPlayers());
@@ -96,7 +115,6 @@ public class ServerRequest extends Thread{
 		 this.OutPack.setCycle(this.Serv.getCycle());
 	     this.out.writeObject(OutPack);
 	     this.OutPack = null;
-		
 	}
 
 
@@ -194,6 +212,23 @@ public class ServerRequest extends Thread{
 			  this.Serv.compareCards();
 			  this.Serv.startGame();
 			}
+		  }else if(counter == 2){ // obsługa sytuacji gdy na stole zostało 2 graczy (sprawdzamy czy jeden z nich nie pasował)
+			  if(this.ClientID!=100){
+				     int active =0;
+					 for(int i=0;i<4;i++){
+						 if(this.Serv.getPlayer(i)!=null){
+							 if(this.Serv.getPlayer(i).getAction()!=3){
+								 active = active +1;
+							 }
+						 }
+					 }
+					 if(active<2){
+						 this.Serv.compareCards();
+					 }else{
+						 this.changeRound();
+						 this.Serv.sentToAll("REFRESH"); 
+					 }
+			  }
 		  }
 	 }
 	

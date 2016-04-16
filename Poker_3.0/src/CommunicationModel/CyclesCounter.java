@@ -1,19 +1,28 @@
 package CommunicationModel;
-/*
- * klasa wątku zliczającego cykle w grze
+/**
+ * Klasa wątku zliczającego cykle w grze
  */
 public class CyclesCounter extends Thread {
     private Server Srv; // wskaźnik serwera
     private int Cycles; // pole wskazuje ile cykli trwa runda
     boolean Running; 
 
-      
+     /**
+      * Konstruktor 
+      * @param srv
+      * 		Wskaźnik na serwer powiązany z licznikiem
+      * @param cycles
+      * 		Ilość cykli po których nastapi zakończenie rozdania porównaniem kart
+      */
 	public CyclesCounter(Server srv, int cycles) {
 		Srv = srv;
 		this.Cycles = cycles;
 		Running = true;
 	}
 	
+	/**
+	 * Metoda uruchamiana automatycznie przy starcie wątku, prowadzi zapętlony nasłuch na aktualną ilość cykli na stole 
+	 */
 	@Override
 	public void run(){
 		int la =0;

@@ -27,6 +27,7 @@ public class Player implements Serializable{
 	 * 3 - pass
 	 * 4 - check
 	 * 5 - in
+	 * 6 - from observer to player (gracz wchodzi na stół z pozycji obserwatora)
 	 */
 	private int Action;
 	private Hand H;
