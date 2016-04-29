@@ -58,6 +58,9 @@ public class Server extends Table implements Runnable{
 	
 	
 	@Override
+	/**
+	 * Medoda uruchamia nasłuch serwera na graczy
+	 */
 	public void run(){
 		try {
 			this.Sck = new ServerSocket(this.Port,4);
@@ -336,12 +339,22 @@ public class Server extends Table implements Runnable{
 	    pack = null;
 	}
 	
-	
+	/**
+	 * Metoda pobrania wątków klienckich
+	 * @return
+	 * 		  Zwraca tablicę z referencjami na obiekty wątków klienckich
+	 */
 	public ServerRequest[] getClientsThr() {
 		return ClientsThr;
 	}
 	
-	
+	/**
+	 * Metoda zapisująca wątek klienta w tablicy wątków klienckich
+	 * @param clientsThr
+	 * 				Parametr obiektu wątku klienta 
+	 * @param index
+	 * 			 	Parametr identyfikujący wątek klienta w tablicy (staje się jednocześnie identyfikatorem gracza)
+	 */
 	public void setClientsThr(ServerRequest clientsThr, int index) {
 		ClientsThr[index] = clientsThr;
 	}
@@ -363,6 +376,11 @@ public class Server extends Table implements Runnable{
 		 }
 	}
 	
+  /**
+   * Metoda ustawia karte o podanym identyfikatorze jaako dostępną do rozdania
+   * @param id
+   * 			Parametr identyfikator karty w talii
+   */
   public void setAvailiableByID(int id){
 	  this.AVAILABLE[id] = true;
   }
@@ -555,44 +573,85 @@ public class Server extends Table implements Runnable{
 		this.sentToAll("REFRESH");
 		this.startGame(); 
   }
-  
+  /**
+   * Metoda Pobrania socketu
+   * @return
+   * 		Zwraca socket serwera
+   */
   public ServerSocket getSocket(){
 	  return this.Sck;
   }
 
+
+/**
+ * Metoda Pobierająca kolejkę obserwatorów
+ * @return
+ * 		 Zwraca kolejkę obserwatorów
+ */
 public Queue<ServerRequest> getClientsQueue() {
 	return ClientsQueue;
 }
+/**
+ * Metoda Ustawiająca kolejkę obserwatorów
+ * @param clientsQueue
+ * 					Zwraca kolejkę obserwatorów
+ */
 public void setClientsQueue(Queue<ServerRequest> clientsQueue) {
 	ClientsQueue = clientsQueue;
 }
 
-
+/**
+ * Metoda sprawdza czy serwer może wysłać wszystkie sety kart dla graczy
+ * @return
+ * 			Zwraca true jeżeli jest zezwolenie
+ */
 public boolean isAllowToSentAllCards() {
 	return AllowToSentAllCards;
 }
 
-
+/**
+ *  Metoda ustawiająca flagę rozesłania kart do wszystkich graczy. Ustawiana na true zwykle po wysłaniu żądania sprawdzenia. 
+ *  Jeżeli Flaga ustawiona na false to serwer wysyła każdemu graczowi tylko i wyłącznie karty nalezące do niego
+ * @param allowToSentAllCards
+ * 							Parametr pozwolenia 
+ */
 public void setAllowToSentAllCards(boolean allowToSentAllCards) {
 	AllowToSentAllCards = allowToSentAllCards;
 }
 
-
+/**
+ * Metoda pobierająca wyjątki
+ * @return
+ * 		Zwraca wyjątek jeżeli taki zaistniał, lub null jeżeli nie
+ */
 public Exception getExc() {
 	return Exc;
 }
 
 
+/**
+ * Metoda ustawiająca wyjątek
+ * @param exc
+ *  		Parametr wyjątku
+ */
 public void setExc(Exception exc) {
 	Exc = exc;
 }
 
-
+/**
+ * Metoda zwracająca flagę zaistnienia wyjątku
+ * @return
+ * 			Zwraca true jeżeli zaistnial wyjątek
+ */
 public boolean isExcFlag() {
 	return ExcFlag;
 }
 
-
+/**
+ * Metoda ustawiająca flagę wyjątku
+ * @param excFlag
+ * 				Parametr flagi wyjątku
+ */
 public void setExcFlag(boolean excFlag) {
 	ExcFlag = excFlag;
 }

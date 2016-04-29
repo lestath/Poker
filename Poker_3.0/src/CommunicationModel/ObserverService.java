@@ -14,13 +14,20 @@ public class ObserverService extends Thread{
 	
 	private Server Srv; //wskaźnik do serwera wywołującego wątek
 	private boolean Open;
-	
+	/**
+	 * Konstruktor
+	 * @param s
+	 *         Referencja na obiekt serwera
+	 */
 	public ObserverService(Server s){
 		this.Srv = s;
 		this.Open = true;
 	}
 	
 
+	/**
+	 * Metoda uruchamiająca nasłuch na obserwatorów
+	 */
 	@Override 
 	public void run(){
 		try {
@@ -39,10 +46,20 @@ public class ObserverService extends Thread{
 		}
 	}
 	
+	/**
+	 * Metoda sprawdza czy można dodawać obserwatorów
+	 * @return
+	 *        zwraca true jeżeli dodawanie obserwatorów jest włączone
+	 */
 	public boolean isOpen(){
 		return this.Open;
 	}
 	
+	/**
+	 * Metoda ustawiająca pozwolenie na wejście obserwatorów
+	 * @param open
+	 *            parametr ustawiony na true ustawia zezwolenie na przyjecie obserwatorów
+	 */
 	public void setOpen(boolean open){
 		this.Open = open;
 		

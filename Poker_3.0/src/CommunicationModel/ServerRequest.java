@@ -1,22 +1,37 @@
 package CommunicationModel;
 
 import java.io.IOException;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import Game.Card;
 import Game.Player;
+
+/**
+ * Klasa wątku obsługi klienta. Obsługuje komunikaty otrzymane od klienta
+ *
+ */
 public class ServerRequest extends Thread{
-	private int ClientID;
-	private ObjectOutputStream out;
-	private ObjectInputStream in;
-	private boolean Running;
-	private Socket ClientSck;
-	private InfoPack OutPack;
-	private Server Serv;
+	private int ClientID;   // identyfikator klienta 
+	private ObjectOutputStream out; // strumień wyjściowy
+	private ObjectInputStream in; // strumień wejściowy
+	private boolean Running; // flaga nasłuch na klienta 
+	private Socket ClientSck; // gniazdo klienta
+	private InfoPack OutPack; // pakiet wysyłany
+	private Server Serv; // referencja na serwer, który wywołał obiekt obsługi klienta
 	private Player WaitingPlayer; // pole pomocnicze przechowuje informacje o graczu jeżeli oczekuje on na wejście do gry jako obserwator
 	
+	/**
+	 * Konstruktor
+	 * @param srv
+	 * 			Parametr serwera 
+	 * @param sck
+	 * 			Parametr socketu serwera wywołującego
+	 * @param i
+	 * 			Parametr identyfikatora dla tego klienta, jest jednocześnie indeksem w tablicy wątków klienckich serwera wywołującego
+	 */
 	public ServerRequest(Server srv ,Socket sck, int i){
 		this.ClientID = i;
 		this.ClientSck = sck;
@@ -33,7 +48,9 @@ public class ServerRequest extends Thread{
 		 
 	}
 	
-	
+	/**
+	 * Metoda startująca zapętlony nasłuch na komunikaty od klienta (Komunikatami są obiekty klasy InfoPack)
+	 */
 	@Override
 	public void run() {
 		
@@ -73,7 +90,11 @@ public class ServerRequest extends Thread{
 	  
 	}
 	
-	// metoda obsługi rozesłania wiadomości z chatu
+	/**
+	 *  metoda obsługi rozesłania wiadomości z chatu
+	 * @param p
+	 *  		Parametr pakietu wysyłanego
+	 */
 	private void chatService(InfoPack p) {
 		String nick="";
 		if(this.ClientID!=100){
@@ -85,7 +106,13 @@ public class ServerRequest extends Thread{
 		 this.Serv.sentToAll("CHAT");
 	}
 
-
+	/**
+	 * Metoda obsługi podłączenia się obserwatora
+	 * @param p
+	 * 			Parametr pakietu otrzymanego
+	 * @throws IOException
+	 * 			Może wyrzucić wyjątek
+	 */
 	private void observerHelloService(InfoPack p) throws IOException {
 		//TODO testowe
 		int active = 0;
@@ -118,13 +145,21 @@ public class ServerRequest extends Thread{
 	}
 
 
-	// metoda zwraca strumień wyjśca na socket klienta
+	/**
+	 *  metoda zwraca strumień wyjśca na socket klienta
+	 * @return
+	 * 			Zwraca strumień wyjściowy dla danego klienta
+	 */
 	public ObjectOutputStream getOut(){
 		return this.out;
 	}
 	
-	// metoda obsługi podbicia i wejścia -- podbicie i wejście róznią się warunkami na etapie kliknięcia w zdarzenie w oknie uzytkownika
-	// ich obsługa na serwerze pozostaje wspólna
+	/**
+	 *  metoda obsługi podbicia i wejścia -- podbicie i wejście róznią się warunkami na etapie kliknięcia w zdarzenie w oknie uzytkownika
+	 * ich obsługa na serwerze pozostaje wspólna
+	 * @param pa
+	 * 			Parametr otrzymanego pakietu
+	 */
 	private void raiseService(InfoPack pa){
 		 InfoPack pack = pa;
 		 this.Serv.setLastAction(pack.getLastAction());
@@ -233,7 +268,13 @@ public class ServerRequest extends Thread{
 	 }
 	
 	
-	// metoda obsługi pakietu powitalnego od klienta
+	/**
+	 * Metoda obsługi pakietu powitalnego od klienta
+	 * @param pa
+	 * 			Parametr otrzymanego pakietu
+	 * @throws IOException
+	 * 			Może wyrzucić wyjątek we/wy
+	 */
 	private void helloService(InfoPack pa) throws IOException{
 		 InfoPack pack = pa;
 		 this.Serv.setPlayer(pack.getPlayer(0),this.ClientID);
@@ -244,7 +285,9 @@ public class ServerRequest extends Thread{
 	}
 	
 	
-	// metoda obsługująca zmianę tury na rzecz kolejnego gracza
+	/**
+	 *Metoda obsługująca zmianę tury na rzecz kolejnego gracza
+	 */
 	private void changeRound(){
         int highestactiveplayer = this.Serv.highestActivePalyer(); // pobieramy nawyższy identefikator wśród aktywnych klientów i dodajemy jeden
 		this.Serv.getPlayer(this.ClientID).setState(0);
@@ -265,7 +308,11 @@ public class ServerRequest extends Thread{
 		}
 	}
 	
-	// obsługa pasowania przez gracza
+	/**
+	 *  obsługa pasowania przez gracza
+	 * @param pa
+	 * 			Parametr otrzymanego pakietu
+	 */
 	private void passService(InfoPack pa){
 		 int active = 0;
 		 InfoPack pack =pa;
@@ -286,7 +333,11 @@ public class ServerRequest extends Thread{
 		 }
 	}
 	
-	// obsługa wymiany kart przez gracza
+	/**
+	 *  Metoda obsługująca wymianę kart przez gracza
+	 * @param in
+	 *		Parametr otrzymanego pakietu
+	 */
 	private void changeCardsService(InfoPack in){ 
 		this.Serv.setPlayer(in.getPlayer(0),this.ClientID);
 		this.Serv.getPlayer(this.ClientID).getH().sortCards();
@@ -319,6 +370,7 @@ public class ServerRequest extends Thread{
 	}
 
  /**
+  * Metoda obsługująca żądanie sprawdzenia 
   * @param in
   * 		pakiet otrzymany od klienta
   */
@@ -335,29 +387,55 @@ public class ServerRequest extends Thread{
 		 this.Serv.compareCards();
 	}
 
+	/**
+	 * Metoda zwraca identyfikator klienta
+	 * @return
+	 * 			Identyfikator klienta(identyfikatorem obserwatora zawsze jest 100)
+	 */
 	public int getClientID(){
 		return this.ClientID;
 	}
 	
+	/**
+	 * Metoda ustawiająca flagę działania
+	 * @param ru
+	 * 			Parametr flagi działania nasłuchu
+	 */
 	public void setRunning(boolean ru){
 		this.Running = ru;
 	}
 
-
+	/**
+	 * Metoda zwraca informacje o graczu, jeżeli oczekuje on jako obserwator
+	 * @return
+	 * 			Gracz oczekujący jako obserwator
+	 */
 	public Player getWaitingPlayer() {
 		return WaitingPlayer;
 	}
 
-
+	/**
+	 * Metoda ustawiająca informację o graczu jeżeli ten oczekuje jako obserwator
+	 * @param waitingPlayer
+	 * 					Parametr gracza oczekującego
+	 */
 	public void setWaitingPlayer(Player waitingPlayer) {
 		WaitingPlayer = waitingPlayer;
 	}
-	
+	/**
+	 * Metoda ustawia identyfikator klienta
+	 * @param id
+	 * 			identyfikator klienta
+	 */
 	public void setClientId(int id){
 		this.ClientID = id;
 	}
 	
-	// metoda zwraca wskaźnik na serwer powiązany z tym wątkiem
+	/**
+	 *  Metoda zwraca wskaźnik na serwer powiązany z tym wątkiem
+	 * @return
+	 * 		Zwraca serwer, który wywołał dany wątek
+	 */
 	public Server getServ(){
 		return this.Serv;
 	}
