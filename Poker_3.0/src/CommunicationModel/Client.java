@@ -268,11 +268,22 @@ public class Client extends Table implements Runnable{
 		 this.setCycle(InPack.getCycle());
 		 this.setLastAction(InPack.getLastAction());
 		 this.setLastRaise(this.InPack.getLastRaise());
+		 
+		 // sprawdzenie, czy na stole nie został tylko jeden gracz jeżeli tak to trzeba zabrać mu dostęp do przycisków
+		 int count = 0;
+		 for(int i =0;i<4;i++){
+			 if(InPack.getPlayers()[i]!=null){
+				 count = count +1;
+			 }
+		 }
 		  if(this.getPlayer(0).getState()==1){
 			 this.setBtnsAfterAction(this.getLastAction());
 		  }else{
 			  this.Frame.disableGameBtns();
 		  }
+		 if(count <2){
+			 this.Frame.disableGameBtns();
+		 }
 		 this.Frame.getGp().setPlayFlag(true);
 		 this.Frame.getGp().repaint();
 	}

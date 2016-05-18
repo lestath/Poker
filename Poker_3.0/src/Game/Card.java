@@ -4,13 +4,13 @@ import java.io.Serializable;
 
 /**
  * Klasa reprezentująca kartę do gry w pokera
- *	Numeryczne odpowiedniki kolorów 
+ *	Odpowiedniki kolorów 
  *  0 - serce
  *  1 - żołądź
  *  2 - dzwonek
  *  3 - wino
  *  
- * Numeryczne odpowiedniki figur
+ * Odpowiedniki figur
  *  0 - As 
  *  [1 -9] jako [2 - 10]
  *  10 - Walet

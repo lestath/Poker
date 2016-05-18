@@ -13,6 +13,12 @@ import javax.swing.JTextField;
 
 import CommunicationModel.Server;
 
+/**
+ * 
+ * Klasa okna głównego wejścia aplikacji. Odpowiada za komunikację z graczem, który musi podać swój nick, ustalić swoją pulę wejściową,
+ * podać port oraz hosta, do którego chce się połączyć.
+ *
+ */
 public class MainApp extends JFrame implements ActionListener{
 	
 	/**
@@ -32,6 +38,9 @@ public class MainApp extends JFrame implements ActionListener{
 	private JLabel HostLab;
 	private JLabel PointsLab;
 	
+	/**
+	 * Konstruktor bezparametrowy - ustala wartości wejściowe oraz wymiary okna, przycisków etc.
+	 */
 	public MainApp(){
 		super("Poker");
 		this.setSize(new Dimension(210,250));
@@ -107,6 +116,7 @@ public class MainApp extends JFrame implements ActionListener{
 	}
 
 
+
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		Object src = arg0.getSource();
@@ -155,7 +165,14 @@ public class MainApp extends JFrame implements ActionListener{
 		}
 	}
 	
-// funkcja przesyła wiadomość do okna aplikacji
+
+/**
+ * Metoda przesyła wiadomość do okna aplikacji
+ * @param msg
+ * 			Treść wiadomości
+ * @param col
+ * 			Kolor wyświetlanego tekstu
+ */
   public void sentMsg(String msg,Color col){
 	  	this.MsgLab.setForeground(col);
 		this.MsgLab.setText(msg);

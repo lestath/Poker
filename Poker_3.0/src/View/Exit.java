@@ -7,7 +7,13 @@ public class Exit implements Runnable{
  
 private int Time;
 GameFrame Frame;
-	
+ /**
+  * Konstruktor z parametrami
+  * @param frm
+  * 		Referencja na okno rozgrywki
+  * @param time
+  * 		Czas opuźnienia podawany w ms
+  */
  public Exit(GameFrame frm,int time){
 	 this.Time = time;
 	 this.Frame = frm;

@@ -183,7 +183,6 @@ public class ServerRequest extends Thread{
 				}
 				 Player play = new Player(this.Serv.getPlayer(this.ClientID).getNickName());
 					if(excflag){
-					    System.out.println("weszło z wyjątku");
 						this.Serv.closeClient(ClientID);
 					} 
 				 this.OutPack = new InfoPack("PLAYEROUT");

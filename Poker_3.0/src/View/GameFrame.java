@@ -28,7 +28,11 @@ import CommunicationModel.Client;
 import CommunicationModel.InfoPack;
 import CommunicationModel.Server;
 
-
+/**
+ * 
+ * Klasa odpowiedzialna za wyświetlenie okna gry po wejściu przez gracza w tryb rozgrywki
+ *
+ */
 public class GameFrame extends JFrame implements Runnable,ActionListener,KeyListener{
 
 	
@@ -58,6 +62,23 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	private JTextArea ChatTa; // przestrzeń tekstowa do wyświetlania wiadomości z chatu użytkowników
 	private JTextField ChatTf; // pole tekstowe gdzie klient wpisuje wiadomość do wysłania na chat
 	
+	/**
+	 *  Konstruktor okna z parametrami
+	 * @param nick
+	 * 			Nick gracza, do którego należy okno
+	 * @param startpoints
+	 * 			Iloć punktów z jakimi gracz rozpoczyna
+	 * @param host
+	 * 			Adres hosta, do którego zostanie połączony klient
+	 * @param port
+	 * 			Numer portu komunikacyjnego
+	 * @param owner
+	 * 			Flaga, w której przekazujemy wiadomość czy gracz uruchamiający swoje okno jest jednocześnie operatorem stołu (tzn. czy działa u niego wątek serwera dla danej rozgrywki)
+	 * @param serv
+	 * 			Obiekt serwera, którego gracz jest właścicielem (jeżeli gracz nie uruchomił swojego serwera tylko łączy się do innego to podajemy tu null, natomisat parametr owner ustawiamy na false)
+	 * @param mainfrm
+	 * 			Referencja na obiekt klasy MainApp, która uruchamia to okno (potrzebna do komunikacji)
+	 */
 	public GameFrame(String nick,double startpoints, String host, int port,boolean owner,Server serv,MainApp mainfrm){
 		super("Poker");
 		this.setSize(900,550);
@@ -237,16 +258,25 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	    this.PlayerInfoLab.setText("Gracz : "+nick);
 	}
 
-	
+	/**
+	 * Metoda po której uruchomieniu następuje wysłanie wiadomości do serwera o chęci opuszczenia gry
+	 */
 	private void exitProcedure() {
 		this.Cli.sentPack(new InfoPack("BYE"));
 	}
 	
 
+	/**
+	 * @return Zwraca referencję na obiekt etekiety z nazwą gracza
+	 */
 	public JLabel getPlayerInfoLab() {
 		return PlayerInfoLab;
 	}
 
+	/**
+	 * Metoda ustawia etykietę informacji o graczu
+	 * @param playerInfoLab
+	 */
 	public void setPlayerInfoLab(JLabel playerInfoLab) {
 		PlayerInfoLab = playerInfoLab;
 	}
@@ -280,20 +310,34 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		}	
 	}
 
+	/**
+	 * @return Zwraca referencję na obiekt klasy MainApp, która wywołała okno gry
+	 */
 	public MainApp getMainFrame() {
 		return MainFrame;
 	}
 
+	/**
+	 *  Metoda ustawia referencję na obiekt klasy MainApp
+	 * @param mainFrame
+	 */
 	public void setMainFrame(MainApp mainFrame) {
 		MainFrame = mainFrame;
 	}
 	
+	/**
+	 * Metoda zwraca referencję na obiekt graficzny gry
+	 * @return 
+	 * 		Obiekt graficzny gry
+	 */
 	public GraphPanel getGp(){
 		return this.Gp;
 	}
 	
 	
-	//metoda wyłącza przyciski gry
+	/**
+	 * Metoda wyłącza przyciski gry
+	 */
 	public void disableGameBtns(){
 		this.ImInBtn.setEnabled(false);
 		this.RaiseBtn.setEnabled(false);
@@ -302,7 +346,9 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		this.PassBtn.setEnabled(false);
 		this.PointsTf.setEditable(false);
 	}
-	//metoda włącza przyciski gry
+	/**
+	 * Metoda włącza przyciski gry
+	 */
 	public void enableGameBtns(){
 		this.ImInBtn.setEnabled(true);
 		this.RaiseBtn.setEnabled(true);
@@ -317,7 +363,13 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	}
 	
 	
-	// metoda przekazuje wiadomości do okna gry
+	/**
+	 *  metoda przekazuje wiadomości do okna gry
+	 * @param msg
+	 * 			Treść wiadomości
+	 * @param col
+	 * 			Kolor wyświetlanego tekstu
+	 */
 	public void setMsg(String msg,Color col){
 		this.MsgLab.setForeground(col);
 		this.MsgLab.setText(msg);
@@ -383,7 +435,9 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	}
 	
 	
-	// metoda obsługi zdarzenia po wciśnięciu przycisku [podbijam]
+	/**
+	 *  Metoda obsługi zdarzenia po wciśnięciu przycisku [podbijam]
+	 */
 	private void raiseService(){
 		double raise = 0.00;
 		try{
@@ -412,7 +466,9 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		pack = null;
 	}
 	
-	// metoda obsługi zdarzenia po wciśnięciu przycisku [wchodzę]
+	/**
+	 * Metoda obsługi zdarzenia po wciśnięciu przycisku [wchodzę]
+	 */
 	private void imInService(){
 		if(this.Cli.getPlayer(0).getPoints()-this.Cli.getLastRaise()<0){
 			this.setMsg("Nie masz tyle",Color.RED);
@@ -431,7 +487,9 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	}
 	
 	
-	// metoda obsługi zdarzenia po wciśnięciu przycisku [pass]
+	/**
+	 * Metoda obsługi zdarzenia po wciśnięciu przycisku [pass]
+	 */
 	private void passService(){
 		this.Cli.getPlayer(0).setAction(3);
 		this.Cli.getPlayer(0).setState(0);
@@ -441,7 +499,9 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		pack = null;
 	}
 	
-	// metoda obsługi zdarzenia po wcisnięciu [wymiana]
+	/**
+	 * Metoda obsługi zdarzenia po wcisnięciu [wymiana]
+	 */
 	private void changeCardsService(){
 		int[] cardstochange = this.Gp.getCardsToChange();
 		boolean isempty = true;
@@ -465,7 +525,9 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		 }
 	}
 	
-	// metoda wysyła wiadomość o sprawdzeniu po uprzednim sprawdzeniu warunków
+	/**
+	 * Metoda wysyła wiadomość o sprawdzeniu po uprzednim sprawdzeniu warunków
+	 */
 	private void checkService(){
 		if(this.Cli.getLastAction()==5 || this.Cli.getLastAction()==3 || this.Cli.getLastAction()==1){
 			if((this.Cli.getPlayer(0).getPoints()-this.Cli.getLastRaise()-50)<0){
@@ -491,7 +553,9 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	}
 	
 	
-	// metoda obsługująca wysłanie wiadomości chat
+	/**
+	 * Metoda obsługująca wysłanie wiadomości chat
+	 */
 	private void chatMessageSentService(){
 		InfoPack pack = new InfoPack("CHAT");
 		pack.setLastChatMessage(this.ChatTf.getText());
@@ -502,7 +566,7 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	}
 
 	
-	// metoda obsługująca wciśnięcie klawiszy
+
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		Object source = arg0.getSource();

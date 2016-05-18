@@ -2,6 +2,11 @@ package Game;
 
 import java.io.Serializable;
 
+/**
+ * 
+ * Klasa reprezentuje gracza
+ *
+ */
 
 public class Player implements Serializable{
 	/**
@@ -33,7 +38,11 @@ public class Player implements Serializable{
 	private Hand H;
 	
 	
-	
+	/**
+	 * Konstruktoe z jednym parametrem
+	 * @param Nick
+	 * 			Nazwa gracza
+	 */
 	public Player(String Nick){
 		this.Action =0;
 		this.H = null;
@@ -46,6 +55,13 @@ public class Player implements Serializable{
 		this.setWinner(0);
 	}
 
+	/**
+	 * Konstruktor z dwoma parametrami
+	 * @param Nick
+	 * 			Nazwa gracza
+	 * @param owner
+	 * 			Flaga wskazując, czy gracz jest właścicielem serwera
+	 */
 	public Player(String Nick,boolean owner){
 		this(Nick);
 		this.Owner = owner;

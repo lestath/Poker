@@ -17,6 +17,11 @@ import javax.swing.JPanel;
 
 import CommunicationModel.Client;
 
+/**
+ * 
+ * Klasa panelu graficznego wyświetlającego, karty,pulę etc.
+ *
+ */
 public class GraphPanel extends JPanel implements MouseListener{
 	
 	/**
@@ -35,6 +40,15 @@ public class GraphPanel extends JPanel implements MouseListener{
 	private boolean ObserverMode; // flaga trybu obserwatora
 	private GameFrame Frame; //okienko gracza
 	
+	/**
+	 * Konstruktor z parametrami
+	 * @param w
+	 * 		Szerokość okna
+	 * @param h
+	 * 		Wysokość okna
+	 * @param frm
+	 * 		Referencja na okno rozgrywki
+	 */
 	public GraphPanel(int w,int h,GameFrame frm){
 		this.ObserverMode = false;
 		this.setPreferredSize(new Dimension(w,h));
@@ -63,7 +77,6 @@ public class GraphPanel extends JPanel implements MouseListener{
 		this.repaint();
 	}
 
-	// metoda rysująca na panelu
 	@Override
 	protected void paintComponent(Graphics g){
 		Graphics2D g2d = (Graphics2D)g;
@@ -89,8 +102,8 @@ public class GraphPanel extends JPanel implements MouseListener{
 	
 
 
-	/* 
-	 * metoda zwraca true, jeżeli nastapił koniec rundy i wyłoniono zwycięzców
+	/** 
+	 * Metoda zwraca true, jeżeli nastapił koniec rundy i wyłoniono zwycięzców
 	 * sprawdza poprzez przejrzenie pola Winner w tablicy graczy 
 	 * 
 	 */  
@@ -115,8 +128,8 @@ public class GraphPanel extends JPanel implements MouseListener{
 		Cli = cli;
 	}
 	
-	/*
-	 *  metoda wyłożenia kart klienta
+	/**
+	 *  Metoda wyłożenia kart klienta
 	 *  jeżeli nastapił koniec tury wykłada również karty pozostałych
 	 */
 	
@@ -146,7 +159,8 @@ public class GraphPanel extends JPanel implements MouseListener{
 			     break; 
 			 }
 			 
-				 for(int i=0;i<5;i++){  // iteruje po kartach
+			  if(this.Cli.getPlayer(j).getH()!=null){	
+			 	for(int i=0;i<5;i++){  // iteruje po kartach
 					String ur = new String("/img/cards/");
 				 	ur = ur+this.Cli.getPlayer(j).getH().getCardFromSet(i).getColor();
 				 	ur = ur+this.Cli.getPlayer(j).getH().getCardFromSet(i).getNumber();
@@ -164,7 +178,8 @@ public class GraphPanel extends JPanel implements MouseListener{
 						e.printStackTrace();
 					}
 						g2d.drawImage(this.CARDS_IMG[i],this.DimCardsTab[i].getSize().width,this.DimCardsTab[i].getSize().height,this);
-			 	}	
+			 	}
+			  }
 				if(this.Frame.getStartBtn()!=null){	
 						this.Frame.getStartBtn().setEnabled(false);
 				}
@@ -176,7 +191,12 @@ public class GraphPanel extends JPanel implements MouseListener{
 		  }
 	   }
 	}
-	// metoda dekoduje cyfrowy kod akcji klienta na słowny
+	/**
+	 * Metoda dekoduje cyfrowy kod akcji klienta na słowny
+	 * @param s
+	 * 		Kod akcji
+	 * @return Odpowiednik mnemoniczny 
+	 */
 	private String extractActionStatus(int s){
 		String status = null;
 		switch(s){
@@ -207,11 +227,14 @@ public class GraphPanel extends JPanel implements MouseListener{
 	}
 	
 	
-	// metoda umieszcza pozostałych graczy wokół stołu
-	/*
-	 * @param zmienna panelu graficznego
-	 * @param zmienna ustalająca od którego elementu tablicy nastepuje rysowanie graczy
+	/**
+	 * metoda umieszcza pozostałych graczy wokół stołu
+	 * @param g2d
+	 * 			zmienna panelu graficznego
+	 * @param start
+	 * 			zmienna ustalająca od którego elementu tablicy nastepuje rysowanie graczy
 	 */
+
 	private void placeRestPalyers(Graphics2D g2d,int start){
 		DecimalFormat df= new DecimalFormat("#.##");
 		 String action;// łańcuch znaków akcji;
@@ -287,7 +310,11 @@ public class GraphPanel extends JPanel implements MouseListener{
 		 }
 	}
 	
-	// metoda pokazuje aktualną pulę na stole
+	/**
+	 *  Metoda pokazuje aktualną pulę na stole
+	 * @param g2d
+	 * 			Obiekt graficzny
+	 */
 	private void showBank(Graphics2D g2d){
 		DecimalFormat df = new DecimalFormat("#.##");
 		String points = df.format(this.Cli.getBank());
@@ -341,7 +368,11 @@ public class GraphPanel extends JPanel implements MouseListener{
 		}
 	}
 	
-	// medota pokazuje info o opuszczeniu gry przez podanego gracza
+	/**
+	 *  medota pokazuje info o opuszczeniu gry przez podanego gracza
+	 * @param name
+	 * 			Nazwa gracza
+	 */
 	public void setPlayerOutMsg(String name){
 		this.OutPlayer = name;
 		this.repaint();

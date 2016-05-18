@@ -23,7 +23,9 @@ public class Hand implements Serializable{
 	}
 	
 	
-	// metoda sortuje przez wstawianie karty w ręku
+	/**
+	 * Metoda sortuje przez wstawianie karty w ręku
+	 */
 	public void sortCards(){
 	  if(this.Cards!=null){
 		if(this.Cards.length>1){
@@ -47,7 +49,10 @@ public class Hand implements Serializable{
 	  }
 	}
 	
-	/*
+	/**
+	* Metoda zwraca moc kart od 0 do 9 gdzie 9 to poker królewski
+	* sprawdzamy w dół czyli czaczynamy od sprawdzenia czy układ jest najmocniejszym zbiorem
+	* tylko wtedy metody sprawdzające zwrócą poprawne wyniki
 	 * 10 - poker królewski
 	 * 9 - poker
 	 * 8 - kareta
@@ -61,9 +66,6 @@ public class Hand implements Serializable{
 	 * 0 - ekwiwalent null
 	 *
 	 */
-	// metoda zwraca moc kart od 0 do 9 gdzie 9 to poker królewski
-	// sprawdzamy w dół czyli czaczynamy od sprawdzenia czy układ jest najmocniejszym zbiorem
-	// tylko wtedy metody sprawdzające zwrócą poprawne wyniki
 	public int getHandPower(){
 		this.sortCards(); // dla bezpieczeństwa sortujemy układ
 		if(this.Cards!=null){
@@ -85,6 +87,11 @@ public class Hand implements Serializable{
 		}
 	}
 	
+	/**
+	 * Metoda zwraca wartość najwyższej karty
+	 * @return 
+	 * 		Wartość najwyższej karty
+	 */
 	public int getHighestCardNum(){
 		int max = 0;
 		 for(int i=0;i<this.Cards.length;i++){
@@ -96,8 +103,12 @@ public class Hand implements Serializable{
 		return max;
 	}
 	
-	// metoda sprawdza czy układ jest pokerem królewskim karty muszą być posortowane i przed użyciem 
-	// tej metody warunek koloru musi być true;
+	/**
+	 * Metoda sprawdza czy układ jest pokerem królewskim karty muszą być posortowane i przed użyciem 
+	 * tej metody warunek koloru musi być true;
+	 * @return
+	 *      jeżeli false to nie poker królewski
+	 */
 	private boolean isRoyalPoker(){
         if(this.Cards[0].getNumber()!=0){return false;}
          for(int i=1;i<this.Cards.length;i++){
@@ -106,8 +117,11 @@ public class Hand implements Serializable{
 		return true;
 	}
 	
-	// metoda sprawdza czy układ jest pokerem  karty muszą być posortowane i przed użyciem 
-	// tej metody warunek koloru musi być true;
+	/**
+	 * metoda sprawdza czy układ jest pokerem  karty muszą być posortowane i przed użyciem 
+	 * tej metody warunek koloru musi być true;
+	 */
+
 	private boolean isPoker(){
 		if(this.Cards[0].getNumber()!=0){return false;}
         for(int i=0;i<this.Cards.length;i++){
@@ -117,7 +131,11 @@ public class Hand implements Serializable{
 		return true;
 	}
 	
-	// metoda sprawdza czy układ jest karetą
+	/**
+	 *  Metoda sprawdza czy układ jest karetą
+	 * @return
+	 *      Jeżeli false to nie kareta
+	 */
 	private boolean isCarriage(){
 		if(this.Cards[0].getNumber() == this.Cards[1].getNumber()){
 		 for(int i=1;i<(this.Cards.length-1);i++){
@@ -133,7 +151,11 @@ public class Hand implements Serializable{
 		return true;
 	}
 	
-	// metoda sprawdza czy układ kart jest fullem, karty muszą być posortowane
+	/**
+	 * Metoda sprawdza czy układ kart jest fullem, karty muszą być posortowane
+	 * @return
+	 * 		jeżeli false to nie full
+	 */
 	private boolean isFull(){
 		if(this.Cards[0].getNumber()==this.Cards[1].getNumber()){
 			if(this.Cards[2].getNumber()==this.Cards[0].getNumber()){
@@ -147,7 +169,11 @@ public class Hand implements Serializable{
 		return false;
 	}
 	
-	// metoda sprawdza czy układ kart jest kolorem
+	/**
+	 * Metoda sprawdza czy układ kart jest kolorem
+	 * @return
+	 * 		Jeżeli false to nie kolor
+	 */
 	private boolean isColor(){
 		for(int i=0;i<this.Cards.length;i++){
 			if((i+1)==Cards.length){break;}
@@ -156,8 +182,11 @@ public class Hand implements Serializable{
 			return true;
 	}
 	
-	// metoda sprawdza czy układ jest stritem
-	// w stricie AS może być liczony jako nasłabsza lub najmocniejsza karta
+	/**
+	 * Metoda sprawdza czy układ jest stritem w stricie AS może być liczony jako nasłabsza lub najmocniejsza karta
+	 * @return
+	 * 		jeżeli false to nie strit
+	 */
 	private boolean isStrit(){
 		int help = 0;
 		if(this.Cards[0].getNumber()==0){
@@ -176,7 +205,11 @@ public class Hand implements Serializable{
    		return true;
 	}
 	
-	// metoda sprawdza czy ukłąd jest trójką (trzy karty z tą samą figurą)
+	/**
+	 * Metoda sprawdza czy ukłąd jest trójką (trzy karty z tą samą figurą)
+	 * @return
+	 * 		Jeżeli false to nie trójka
+	 */
 	private boolean isThree(){
 		int counter =0;
 		for(int i=0;i<this.Cards.length;i++){
@@ -191,7 +224,11 @@ public class Hand implements Serializable{
 			return false;
 	}
 	
-	// metoda sprawdza czy w układzie są dwie pary
+	/**
+	 * Metoda sprawdza czy w układzie są dwie pary
+	 * @return
+	 * 		Jeżeli false to nie dwie pary
+	 */
 	private boolean isTwoPair(){
 		boolean firstflag= false ;
 		for(int i=0;i<this.Cards.length;i++){
@@ -204,6 +241,11 @@ public class Hand implements Serializable{
 		return false;
 	}
 	
+	/**
+	 * Metoda sprawdza czy w układzie jest para
+	 * @return
+	 * 		Jeżeli false to nie ma pary
+	 */
 	private boolean isPair(){
 		for(int i=0;i<this.Cards.length;i++){
 			if((i+1)==this.Cards.length){break;}

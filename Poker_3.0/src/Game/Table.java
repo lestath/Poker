@@ -3,7 +3,11 @@ package Game;
 import java.io.Serializable;
 
 
-
+/**
+ * 
+ * Klasa reprezentująca stół
+ *
+ */
 public class Table implements Serializable {
 
 	/**
@@ -18,6 +22,9 @@ public class Table implements Serializable {
 	private String LastChatMessage; //ostatnia wiadomość na chat 
 	private Player[] Players;
 	
+	/**
+	 * Konstruktor bezparametrowy
+	 */
 	public Table(){
 		this.setLastAction(0);
 		this.setLastRaise(0.00);
