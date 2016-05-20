@@ -157,15 +157,24 @@ public class Server extends Table implements Runnable{
 		 * graczom ich kart od każdego gracza bierzemy 50pkt do puli
 		*/
 		
-		//pobranie od każdego gracza po 50 pkt i dodanie do puli
-		for(int i =0; i<4;i++){
+		// sprawdzenie ilu graczy jest na stole
+		int counter = 0;
+		for(int i=0;i<4;i++){
 			if(super.getPlayer(i)!=null){
-				super.getPlayer(i).setPoints(super.getPlayer(i).getPoints()-50);
-				super.setBank(super.getBank()+50);
-			    super.getPlayer(i).getH().sortCards();
+				counter = counter+1;
 			}
 		}
-
+		
+		//pobranie od każdego gracza po 50 pkt i dodanie do puli, jeżeli na stole został więcej niż 1 gracz
+		if(counter > 1){
+			for(int i =0; i<4;i++){
+				if(super.getPlayer(i)!=null){
+					super.getPlayer(i).setPoints(super.getPlayer(i).getPoints()-50);
+					super.setBank(super.getBank()+50);
+				    super.getPlayer(i).getH().sortCards();
+				}
+			}
+	   }
 		
        for(int i=0;i<4;i++){
             if(this.getPlayer(i)!=null){

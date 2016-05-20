@@ -243,8 +243,8 @@ public class ServerRequest extends Thread{
 			}
 		  }else if(counter == 1){ // obsługa sytuacji gdy na stole zostaje jeden gracz
 			 if(this.ClientID!=100){
-			  this.Serv.compareCards();
-			  this.Serv.startGame();
+			   this.Serv.compareCards();
+			   this.Serv.startGame();
 			}
 		  }else if(counter == 2){ // obsługa sytuacji gdy na stole zostało 2 graczy (sprawdzamy czy jeden z nich nie pasował)
 			  if(this.ClientID!=100){
