@@ -119,7 +119,7 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		new Thread(this.Cli).start();
 		
 		this.BtnPanel = new JPanel();
-		this.BtnPanel.setPreferredSize(new Dimension(185,500));
+		this.BtnPanel.setPreferredSize(new Dimension(180,500));
 		this.BtnPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		this.BtnPanel.setOpaque(false);
 		 

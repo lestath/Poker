@@ -51,7 +51,7 @@ public class MainApp extends JFrame implements ActionListener{
 		
 		// inicjalizacja ustawienie atrybutów panelu wejściowego;
 
-		Dimension btndim = new Dimension(200,24);
+		Dimension btndim = new Dimension(195,24);
 		
 		
 		// ustawienie elementów panelu wejściowego
