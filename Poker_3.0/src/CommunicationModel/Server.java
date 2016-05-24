@@ -175,6 +175,11 @@ public class Server extends Table implements Runnable{
 				}
 			}
 	   }
+	   for(int i=0;i<4;i++){
+	            if(this.getPlayer(i)!=null){
+	            	this.getPlayer(i).setState(0);
+	            }
+	    }	
 		
        for(int i=0;i<4;i++){
             if(this.getPlayer(i)!=null){

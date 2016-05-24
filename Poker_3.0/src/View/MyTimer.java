@@ -62,7 +62,11 @@ public class MyTimer extends Thread{
 			if(!this.Stop){this.Frm.passService();}
 			
 		  }
-		  System.out.println("Jade w pętli");
+		  	try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+					return;
+			}
 		  continue;
 	  }
 	}
