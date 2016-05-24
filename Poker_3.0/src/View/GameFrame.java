@@ -61,7 +61,10 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	private JScrollPane ChatSp; // panel scrollowany służący jako kontener dla chatu klientów
 	private JTextArea ChatTa; // przestrzeń tekstowa do wyświetlania wiadomości z chatu użytkowników
 	private JTextField ChatTf; // pole tekstowe gdzie klient wpisuje wiadomość do wysłania na chat
+	private JLabel TimeLab; // etykieta czasu pozostałego na ruch
+	private MyTimer Timer; // obiekt czasomierza dla gracza przy ruchu
 	
+
 	/**
 	 *  Konstruktor okna z parametrami
 	 * @param nick
@@ -81,7 +84,7 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	 */
 	public GameFrame(String nick,double startpoints, String host, int port,boolean owner,Server serv,MainApp mainfrm){
 		super("Poker");
-		this.setSize(900,550);
+		this.setSize(900,584);
 	    this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	    this.addWindowListener(new WindowAdapter() {
 	        @Override
@@ -96,18 +99,21 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}
-		Image dimg = img.getScaledInstance(900, 550, Image.SCALE_SMOOTH);
+		Image dimg = img.getScaledInstance(900, 584, Image.SCALE_SMOOTH);
 		ImageIcon imageIcon = new ImageIcon(dimg);
 		JLabel backg = new JLabel(imageIcon);
-		backg.setPreferredSize(new Dimension(900,550));
+		backg.setPreferredSize(new Dimension(900,584));
  		setContentPane(backg);
 		
+ 		// start czasomierza
+
+ 		
 		this.setLayout(new FlowLayout(FlowLayout.LEADING));
 
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.Srv = null;
-		this.Gp = new GraphPanel(700,500,this); // inicjalizacja panelu graficznego
+		this.Gp = new GraphPanel(700,524,this); // inicjalizacja panelu graficznego
 		this.Cli = new Client(nick,startpoints,host,port,this,owner); // inicjalizacja klienta 
 	    
 		// powiązanie klienta z panelem graficznym
@@ -119,7 +125,7 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		new Thread(this.Cli).start();
 		
 		this.BtnPanel = new JPanel();
-		this.BtnPanel.setPreferredSize(new Dimension(180,500));
+		this.BtnPanel.setPreferredSize(new Dimension(180,554));
 		this.BtnPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		this.BtnPanel.setOpaque(false);
 		 
@@ -145,7 +151,12 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		 // etykieta przekazująca informacje 
 		 this.MsgLab = new JLabel();
 		 this.MsgLab.setPreferredSize(new Dimension(170,60));
-
+		 
+		 //etykieta czasu
+		 this.TimeLab = new JLabel("Czas : 30 s");
+		 this.TimeLab.setForeground(Color.WHITE);
+		 this.TimeLab.setPreferredSize(new Dimension(170,24));
+		 
 		 // pole podbijania stawki
 		 this.PointsLab = new JLabel("$");
 		 this.setPreferredSize(new Dimension(50,24));
@@ -236,6 +247,7 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		this.BtnPanel.add(this.MsgLab);
 		this.BtnPanel.add(this.PointsLab);
 		this.BtnPanel.add(this.PointsTf);
+		this.BtnPanel.add(this.TimeLab);
 		this.BtnPanel.add(this.ImInBtn);
 		this.BtnPanel.add(this.RaiseBtn);
 		this.BtnPanel.add(this.ChangeBtn);
@@ -248,6 +260,8 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		this.BtnPanel.add(this.ExitGameBtn);
 
 		
+		//inicjalizacja czasomierza i ustalamy czas na ruch na 30s
+
 		add(this.Gp);
 		add(this.BtnPanel);
 			if(!owner){
@@ -256,6 +270,7 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	    this.setVisible(true);   
 	    this.PlayerInfoLab.setForeground(Color.WHITE);
 	    this.PlayerInfoLab.setText("Gracz : "+nick);
+	      
 	}
 
 	/**
@@ -283,10 +298,15 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		
+      initTimer();
 	}
 
+	
+	public void initTimer(){
+		this.Timer = new MyTimer(30);
+		this.Timer.setFrm(this);
+		this.Timer.start();
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
@@ -295,6 +315,7 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 			this.StartGameBtn.setEnabled(false);
 		}else if(src == this.ExitGameBtn){
 				 this.Cli.sentPack(new InfoPack("BYE"));
+				this.Timer.exit();
 		}else if(src == this.RaiseBtn){
 			this.raiseService();
 		}else if(src == this.ImInBtn){
@@ -339,6 +360,9 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	 * Metoda wyłącza przyciski gry
 	 */
 	public void disableGameBtns(){
+		if(this.Timer!=null){
+			this.Timer.stopTimer();
+		}
 		this.ImInBtn.setEnabled(false);
 		this.RaiseBtn.setEnabled(false);
 		this.ChangeBtn.setEnabled(false);
@@ -350,6 +374,9 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	 * Metoda włącza przyciski gry
 	 */
 	public void enableGameBtns(){
+	   if(this.Timer !=null){
+		this.Timer.startTimer();
+	   }
 		this.ImInBtn.setEnabled(true);
 		this.RaiseBtn.setEnabled(true);
 		if((this.Cli.getPlayer(0).getChanges()<1) && (this.Cli.getCycle()<1)){
@@ -434,6 +461,13 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 		return this.ChatSp;
 	}
 	
+	public JLabel getTimeLab() {
+		return this.TimeLab;
+	}
+
+	public void setTimeLab(JLabel timeLab) {
+		TimeLab = timeLab;
+	}
 	
 	/**
 	 *  Metoda obsługi zdarzenia po wciśnięciu przycisku [podbijam]
@@ -490,7 +524,7 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	/**
 	 * Metoda obsługi zdarzenia po wciśnięciu przycisku [pass]
 	 */
-	private void passService(){
+	public void passService(){
 		this.Cli.getPlayer(0).setAction(3);
 		this.Cli.getPlayer(0).setState(0);
 		InfoPack pack = new InfoPack("PASS");
@@ -529,6 +563,7 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 	 * Metoda wysyła wiadomość o sprawdzeniu po uprzednim sprawdzeniu warunków
 	 */
 	private void checkService(){
+		
 		if(this.Cli.getLastAction()==5 || this.Cli.getLastAction()==3 || this.Cli.getLastAction()==1){
 			if((this.Cli.getPlayer(0).getPoints()-this.Cli.getLastRaise()-50)<0){
 				this.setMsg("Nie masz tyle",Color.RED);
@@ -602,6 +637,8 @@ public class GameFrame extends JFrame implements Runnable,ActionListener,KeyList
 			this.Cli.sentPack(new InfoPack("BYE"));
 		}
 	}
+	
+	
 
 	
 }
