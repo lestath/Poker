@@ -169,9 +169,14 @@ public class Server extends Table implements Runnable{
 		if(counter > 1){
 			for(int i =0; i<4;i++){
 				if(super.getPlayer(i)!=null){
+					//wyrzucenie gracza jeżeli nie wystarczającej ilości punktów na dalszą grę
+				   if(getPlayer(i).getPoints()<=100){
+					   this.ClientsThr[i].byeService(false);
+				   }else{
 					super.getPlayer(i).setPoints(super.getPlayer(i).getPoints()-50);
 					super.setBank(super.getBank()+50);
 				    super.getPlayer(i).getH().sortCards();
+				  }
 				}
 			}
 	   }

@@ -83,20 +83,17 @@ public class GraphPanel extends JPanel implements MouseListener{
 		g2d.setFont(new Font("DejaVu Sans",Font.BOLD,13));
 		g2d.setColor(Color.white);
 		if(this.PlayFlag){
-			if(!this.ObserverMode){
-			 g2d.setColor(Color.WHITE);
-			 this.showClientHandPower(g2d);
-			 this.showClientCards(g2d);
-			}else if(this.isEnd()){
-			 this.showClientCards(g2d);	
-			}
 			this.showBank(g2d);
 			this.placeRestPalyers(g2d,0);
 			 if(this.OutPlayer!=null){
 				 this.Frame.setMsg("<html>Gracz: "+this.OutPlayer+"<br>Opuścił grę</html>",Color.ORANGE);
 				 this.OutPlayer = null;
-			 }
-			
+			}
+			if((!this.ObserverMode) || (this.isEnd())){
+			 g2d.setColor(Color.WHITE);
+			 this.showClientHandPower(g2d);
+			 this.showClientCards(g2d);
+			}
 		}
 	}
 	
@@ -321,50 +318,66 @@ public class GraphPanel extends JPanel implements MouseListener{
 		g2d.setColor(Color.WHITE);
 		g2d.drawString("Bank",320,170);
 		g2d.drawString("$ : "+points,320,190);
-		g2d.drawString("Cycle: "+this.Cli.getCycle(),320,210);
+		g2d.drawString("Cykl: "+this.Cli.getCycle(),320,210);
 	}
 	
 	private void showClientHandPower(Graphics2D g2d){
-		if(this.Cli.getPlayer(0)!=null){
-		  if(this.Cli.getPlayer(0).getH()!=null){
-				String handpow = " ";
-				switch(this.Cli.getPlayer(0).getH().getHandPower()){
-				 case 1:
-					 handpow = "Wysoka Karta";
-				 break;
-				 case 2:
-					 handpow = "Para";
-				 break;
-				 case 3:
-					 handpow = "Dwie Pary";
-				 break;
-				 case 4:
-					 handpow = "Trójka";
-				 break;
-				 case 5:
-					 handpow = "Strit";
-				 break;
-				 case 6:
-					 handpow = "Kolor";
-				 break;
-				 case 7:
-					 handpow = "Full";
-				 break;
-				 case 8:
-					 handpow = "Kareta";
-				 break;
-				 case 9:
-					 handpow = "Poker";
-				 break;
-				 case 10:
-					 handpow = "Poker Królewski";
-				 break;
-				 default :
-					 handpow = " ";
-				 break;
-				}
-				g2d.drawString(handpow,300,470);
-		  }
+		Dimension[] dim = new Dimension[4];
+		 for(int i=0;i<4;i++){
+			 dim[i] = new Dimension(0,0);
+		 }
+		int counter = 1; //licznik dla ilu graczy pokazać moc ręki 
+		//isEnd - zmienna flagowa mówiąca o tym czy gra się zakończyła jeżeli true to trzeba pokazać moce ręki wszystkich graczy
+		dim[0].setSize(300,470);
+		if(this.isEnd()){
+			counter = 4;
+			dim[1].setSize(100,40);
+			dim[2].setSize(80, 350);
+			dim[3].setSize(430,230);
+		}
+		
+		for(int i=0;i<counter;i++){
+			if(this.Cli.getPlayer(i)!=null){
+			  if(this.Cli.getPlayer(i).getH()!=null){
+					String handpow = " ";
+					switch(this.Cli.getPlayer(i).getH().getHandPower()){
+					 case 1:
+						 handpow = "Wysoka Karta";
+					 break;
+					 case 2:
+						 handpow = "Para";
+					 break;
+					 case 3:
+						 handpow = "Dwie Pary";
+					 break;
+					 case 4:
+						 handpow = "Trójka";
+					 break;
+					 case 5:
+						 handpow = "Strit";
+					 break;
+					 case 6:
+						 handpow = "Kolor";
+					 break;
+					 case 7:
+						 handpow = "Full";
+					 break;
+					 case 8:
+						 handpow = "Kareta";
+					 break;
+					 case 9:
+						 handpow = "Poker";
+					 break;
+					 case 10:
+						 handpow = "Poker Królewski";
+					 break;
+					 default :
+						 handpow = " ";
+					 break;
+					}
+					g2d.drawString(handpow,dim[i].width,dim[i].height);
+			  }
+			}
 		}
 	}
 	
