@@ -178,16 +178,18 @@ public class ServerRequest extends Thread{
 	 */
 	 public void byeService(boolean excflag){
 		   	if(this.ClientID!=100){ 
-				if(this.Serv.getPlayer(ClientID).getState()==1){
-					this.changeRound(); // przekazanie tury na rzecz innego gracza
-				}
-				 Player play = new Player(this.Serv.getPlayer(this.ClientID).getNickName());
-					if(excflag){
-						this.Serv.closeClient(ClientID);
-					} 
-				 this.OutPack = new InfoPack("PLAYEROUT");
-				 this.OutPack.setPlayer(play,0);
-				 this.Serv.sentPackToAll(this.OutPack);
+				   if(this.Serv.getPlayer(ClientID)!=null){
+			   		if(this.Serv.getPlayer(ClientID).getState()==1){
+						this.changeRound(); // przekazanie tury na rzecz innego gracza
+					}
+					 Player play = new Player(this.Serv.getPlayer(this.ClientID).getNickName());
+						if(excflag){
+							this.Serv.closeClient(ClientID);
+						} 
+					 this.OutPack = new InfoPack("PLAYEROUT");
+					 this.OutPack.setPlayer(play,0);
+					 this.Serv.sentPackToAll(this.OutPack);
+				   }
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {

@@ -122,6 +122,8 @@ public class MainApp extends JFrame implements ActionListener{
 		Object src = arg0.getSource();
 		if(this.NickTf.getText().isEmpty()){
 			this.sentMsg("Podaj Nick",Color.red);
+		}else if(this.NickTf.getText().length()>13){
+			this.sentMsg("Nick max 13 znaków",Color.red);
 		}else if(this.HostTf.getText().isEmpty()){
 			this.sentMsg("Podaj Host",Color.red);
 		}else if(this.PortTf.getText().isEmpty()){

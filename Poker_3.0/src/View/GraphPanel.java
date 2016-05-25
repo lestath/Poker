@@ -251,14 +251,14 @@ public class GraphPanel extends JPanel implements MouseListener{
 			     break;
 				 case 1:
 					 h =20;
-					 tokenh=110;
+					 tokenh=80;
 					 tokenw=w;
 				 break;
 				 case 2:
 					 w = 30;
 					 h = 200;
 					 tokenh = 170;
-					 tokenw = w+100;
+					 tokenw = w+110;
 				 break;
 				 case 3 :
 					 w = 570;

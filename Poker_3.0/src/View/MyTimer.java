@@ -3,7 +3,7 @@ package View;
 /**
  * 
  * Wątek odliczający czas w dół od podanego w konstruktorze w sekundach
- * Wykorzystywany gdy gracz otrzymuje turę i jeżeli nie wykona żadnych działań przed upływem czasu to automatycznie passuje.
+ * Wykorzystywany gdy gracz otrzymuje turę i jeżeli nie wykona żadnych działań przed upływem czasu to automatycznie pasuje.
  *
  */
 public class MyTimer extends Thread{
@@ -14,6 +14,11 @@ public class MyTimer extends Thread{
 	private GameFrame Frm;
 	
 
+	/**
+	 * Konstruktor
+	 * @param seconds
+	 * 				Liczba sekund, od której rozpoczyna się odliczanie
+	 */
 	public MyTimer(int seconds){
 		this.Seconds = seconds;
 		this.Stop = true;
@@ -33,18 +38,33 @@ public class MyTimer extends Thread{
 	  this.Stop = false;
 	}
 	
-	
+	/**
+	 * Metoda zwraca ramkę, która wywołała timer
+	 * @return
+	 * 		Ramka, która wywołała timer
+	 */
 	public GameFrame getFrm() {
 		return Frm;
 	}
+	/**
+	 * Metoda ustawia ramkę, która wywołuje timer
+	 * @param frm
+	 * 			Parametr ramki
+	 */
 	public void setFrm(GameFrame frm) {
 		Frm = frm;
 	}
 	
+	/**
+	 * Metoda kończy działanie timera
+	 */
 	public void exit(){
 		this.Exi = false;
 	}
 	
+	/**
+	 * Metoda wywoływana przy starcie wątku, stanowi implementację wątku timera
+	 */
 	public void run() {
 		while(this.Exi){
 		  if(!this.Stop){
